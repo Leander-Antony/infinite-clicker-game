@@ -3,7 +3,7 @@ let timeLeft = 30;
 let isGameOver = false;
 let lastClickTime = 0;
 let fastClickCount = 0;
-const maxClickSpeed = 50; // Allow up to 50 clicks per second (1 click every 20ms)
+const maxClickSpeed = 66.67; // Allow up to 15 clicks per second (1 click every ~66.67ms)
 const maxFastClicks = 5;  // Number of consecutive fast clicks before alert
 
 const scoreElement = document.getElementById('score');
@@ -14,7 +14,7 @@ const nameModal = document.getElementById('name-modal');
 const nameForm = document.getElementById('name-form');
 const leaderboardElement = document.getElementById('leaderboard');
 
-// Function to update the score each time the button is clicked
+// Function to update the score each time the button is clicked/touched
 const updateScore = () => {
     if (isGameOver) return; // If the game is over, stop updating score
 
@@ -24,6 +24,9 @@ const updateScore = () => {
         fastClickCount++;
         if (fastClickCount >= maxFastClicks) {
             alert("Auto-clicker detected! Your score will not be counted.");
+            // Reset the score when auto-clicker is detected
+            score = 0;
+            scoreElement.textContent = score;
             return; // Stop updating score if auto-clicker is detected
         }
     } else {
@@ -58,8 +61,9 @@ const startTimer = () => {
 // Start the timer as soon as the game starts
 startTimer();
 
-// Event listener for clicking the button
+// Event listener for clicking the button (supports both click and touch events)
 clickButton.addEventListener('click', updateScore);
+clickButton.addEventListener('touchstart', updateScore); // Add touch event listener
 
 // Handle name form submission without refreshing the page
 nameForm.addEventListener('submit', function(event) {

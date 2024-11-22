@@ -3,7 +3,7 @@ let timeLeft = 30;
 let isGameOver = false;
 let lastClickTime = 0;
 let fastClickCount = 0;
-const maxClickSpeed = 20; // Allow up to 50 clicks per second (1 click every 20ms)
+const maxClickSpeed = 50; // Allow up to 50 clicks per second (1 click every 20ms)
 const maxFastClicks = 5;  // Number of consecutive fast clicks before alert
 
 const scoreElement = document.getElementById('score');

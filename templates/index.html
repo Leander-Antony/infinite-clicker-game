@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinite Clicker</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <style></style>
+  </head>
+  <body>
+    <div class="game-container">
+      <h1>Infinite Clicker</h1>
+      <p>Click the button as many times as you can before time runs out!</p>
+      <button id="click-button">Hit Me!</button>
+      <p>Points: <span id="score">0</span></p>
+      <p>Time left: <span id="timer">30</span> seconds</p>
+      <p id="message"></p>
+    </div>
+
+    <!-- Leaderboard Display -->
+    <div class="leaderboard" id="leaderboard-container">
+      <h2>Leaderboard</h2>
+      <ul id="leaderboard">
+        <!-- Leaderboard entries will be inserted here dynamically -->
+      </ul>
+    </div>
+
+    <!-- Modal for Player Name Input -->
+    <div id="name-modal" class="modal">
+      <div class="modal-content">
+        <h2>Enter Your Name</h2>
+        <form id="name-form">
+          <label for="player-name">Your Name:</label>
+          <input type="text" id="player-name" name="player_name" required />
+          <button type="submit" id="submit-name">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

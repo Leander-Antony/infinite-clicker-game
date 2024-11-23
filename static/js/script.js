@@ -6,7 +6,7 @@ let fastClickCount = 0;
 const maxClickSpeed = 66.67; // Allow up to 15 clicks per second (1 click every 66.67ms)
 const maxFastClicks = 5;  // Number of consecutive fast clicks before alert
 
-let isTouching = false; // Flag to check if touch event is active
+let isTouching = false; // Flag to prevent double-counting on mobile
 
 const scoreElement = document.getElementById('score');
 const timerElement = document.getElementById('timer');
@@ -16,42 +16,29 @@ const nameModal = document.getElementById('name-modal');
 const nameForm = document.getElementById('name-form');
 const leaderboardElement = document.getElementById('leaderboard');
 
-// Function to update the score each time the button is clicked
+// Function to update the score
 const updateScore = (event) => {
-    if (isGameOver) return; // If the game is over, stop updating score
+    if (isGameOver) return; // Stop if the game is over
 
-    // Prevent processing if the touch event is still active
-    if (isTouching) return;
-
-    // Mark the touch as active
-    isTouching = true;
-
-    // Detect if an auto-clicker is being used
     let now = Date.now();
     if (now - lastClickTime < maxClickSpeed) {
         fastClickCount++;
         if (fastClickCount >= maxFastClicks) {
-            alert("Auto-clicker detected! Your score will not be counted.");
-            score = 0; // Reset the score
+            alert("Auto-clicker detected! Your score will be reset.");
+            score = 0; // Reset score if auto-clicker is detected
             scoreElement.textContent = score;
-            return; // Stop updating score if auto-clicker is detected
+            return;
         }
     } else {
-        fastClickCount = 0; // Reset fast click counter if speed is normal
+        fastClickCount = 0; // Reset fast-click counter if speed is normal
     }
     lastClickTime = now;
 
-    // Update score if no auto-clicker detected
     score++;
     scoreElement.textContent = score;
-
-    // Set a timeout to reset the isTouching flag after a short delay (50ms)
-    setTimeout(() => {
-        isTouching = false;
-    }, 50);
 };
 
-// Function to start and manage the timer
+// Function to start the timer
 const startTimer = () => {
     const timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
@@ -59,7 +46,7 @@ const startTimer = () => {
             messageElement.textContent = `Game Over! Your final score is: ${score}`;
             isGameOver = true;
 
-            // Only show the name input modal if the score is greater than zero and auto-clicker wasn't detected
+            // Show the name input modal if the score is valid
             if (score > 0) {
                 nameModal.style.display = 'block';
             }
@@ -70,12 +57,24 @@ const startTimer = () => {
     }, 1000);
 };
 
-// Start the timer as soon as the game starts
+// Start the timer when the game starts
 startTimer();
 
-// Event listener for clicking the button
-clickButton.addEventListener('click', updateScore);        // For desktop clicks
-clickButton.addEventListener('touchstart', updateScore);   // For mobile taps
+// Disable click on mobile to avoid double counting
+if (!('ontouchstart' in window)) {
+    clickButton.addEventListener('click', updateScore); // Only for desktop
+}
+
+// Handle touch events for mobile users
+clickButton.addEventListener('touchstart', (event) => {
+    if (isTouching) return; // Prevent double-touching
+    isTouching = true;
+    updateScore(event);      // Call the scoring function
+});
+
+clickButton.addEventListener('touchend', () => {
+    isTouching = false; // Reset the flag after touch ends
+});
 
 // Handle name form submission without refreshing the page
 nameForm.addEventListener('submit', function(event) {

@@ -9,18 +9,33 @@
       href="{{ url_for('static', filename='css/style.css') }}"
     />
     <link rel="icon" href="{{ url_for('static', filename='img/logo.ico') }}" type="image/x-icon" />
-    <style></style>
+    <style>
+      .hidden {
+        display: none;
+      }
+      #reload-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+    </style>
   </head>
   <body>
-    <div class="game-container">
+    <div class="game-container center">
       <h1>Infinite Clicker</h1>
       <p>Click the button as many times as you can before time runs out!</p>
       <button id="click-button">Hit Me!</button>
       <p>Points: <span id="score">0</span></p>
       <p>Time left: <span id="timer">30</span> seconds</p>
       <p id="message"></p>
-      <!-- Add a page reload button -->
-      <button id="reload-button" style="display:none;">Reload Game</button>
+      <button id="reload-button" class="hidden">Reload Page</button>
     </div>
 
     <!-- Leaderboard Display -->
@@ -44,14 +59,7 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    
   </body>
 </html>
-
-<!--
-     _
-   __(.)< QUACK QUACK
-  \_)_)
-     `
-Fuck off, bitches!
--->
-

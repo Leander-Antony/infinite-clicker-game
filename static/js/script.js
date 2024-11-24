@@ -3,6 +3,7 @@ let timeLeft = 30;
 let isGameOver = false;
 let lastClickTime = 0;
 let fastClickCount = 0;
+let timerStarted = false; // New flag for tracking if the timer has started
 const maxClickSpeed = 66.67; // Allow up to 15 clicks per second (1 click every 66.67ms)
 const maxFastClicks = 5;  // Number of consecutive fast clicks before alert
 
@@ -15,9 +16,15 @@ const clickButton = document.getElementById('click-button');
 const nameModal = document.getElementById('name-modal');
 const nameForm = document.getElementById('name-form');
 const leaderboardElement = document.getElementById('leaderboard');
+const reloadButton = document.getElementById('reload-button'); // Reload button
 
 // Function to update the score each time the button is clicked
 const updateScore = (event) => {
+    if (!timerStarted) {
+        startTimer(); // Start the timer when the button is clicked for the first time
+        timerStarted = true; // Mark the timer as started
+    }
+
     if (isGameOver) return; // If the game is over, stop updating score
 
     // Prevent processing if the touch event is still active
@@ -58,6 +65,7 @@ const startTimer = () => {
             clearInterval(timerInterval); // Stop the timer
             messageElement.textContent = `Game Over! Your final score is: ${score}`;
             isGameOver = true;
+            reloadButton.style.display = 'inline'; // Show reload button after game over
 
             // Only show the name input modal if the score is greater than zero and auto-clicker wasn't detected
             if (score > 0) {
@@ -70,12 +78,14 @@ const startTimer = () => {
     }, 1000);
 };
 
-// Start the timer as soon as the game starts
-startTimer();
-
 // Event listener for clicking the button
 clickButton.addEventListener('click', updateScore);        // For desktop clicks
 clickButton.addEventListener('touchstart', updateScore);   // For mobile taps
+
+// Reload button functionality
+reloadButton.addEventListener('click', () => {
+    window.location.reload(); // Reload the page to reset the game
+});
 
 // Handle name form submission without refreshing the page
 nameForm.addEventListener('submit', function(event) {

@@ -7,7 +7,7 @@ let timerStarted = false; // New flag for tracking if the timer has started
 const maxClickSpeed = 66.67; // Allow up to 15 clicks per second (1 click every 66.67ms)
 const maxFastClicks = 5;  // Number of consecutive fast clicks before alert
 
-let isTouching = false; // Flag to check if touch event is active
+let isTouching = false; // Flag to prevent double-counting on mobile
 
 const scoreElement = document.getElementById('score');
 const timerElement = document.getElementById('timer');
@@ -18,7 +18,7 @@ const nameForm = document.getElementById('name-form');
 const leaderboardElement = document.getElementById('leaderboard');
 const reloadButton = document.getElementById('reload-button'); // Reload button
 
-// Function to update the score each time the button is clicked
+// Function to update the score
 const updateScore = (event) => {
     if (!timerStarted) {
         startTimer(); // Start the timer when the button is clicked for the first time
@@ -38,27 +38,21 @@ const updateScore = (event) => {
     if (now - lastClickTime < maxClickSpeed) {
         fastClickCount++;
         if (fastClickCount >= maxFastClicks) {
-            alert("Auto-clicker detected! Your score will not be counted.");
-            score = 0; // Reset the score
+            alert("Auto-clicker detected! Your score will be reset.");
+            score = 0; // Reset score if auto-clicker is detected
             scoreElement.textContent = score;
-            return; // Stop updating score if auto-clicker is detected
+            return;
         }
     } else {
-        fastClickCount = 0; // Reset fast click counter if speed is normal
+        fastClickCount = 0; // Reset fast-click counter if speed is normal
     }
     lastClickTime = now;
 
-    // Update score if no auto-clicker detected
     score++;
     scoreElement.textContent = score;
-
-    // Set a timeout to reset the isTouching flag after a short delay (50ms)
-    setTimeout(() => {
-        isTouching = false;
-    }, 50);
 };
 
-// Function to start and manage the timer
+// Function to start the timer
 const startTimer = () => {
     const timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
@@ -67,7 +61,7 @@ const startTimer = () => {
             isGameOver = true;
             reloadButton.style.display = 'inline'; // Show reload button after game over
 
-            // Only show the name input modal if the score is greater than zero and auto-clicker wasn't detected
+            // Show the name input modal if the score is valid
             if (score > 0) {
                 nameModal.style.display = 'block';
             }
